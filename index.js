@@ -7,19 +7,33 @@ let http = require('http');
 const server = http.createServer((req, res) =>{
     if(req.url == '/jokes' && req.method == 'GET'){
      getAllJokes(req, res);   
+    }else if(req.url == '/jokes' && req.method == 'POST'){
+        addJoke(req, res);
+    }
+    else{
+        res.writeHead(404,"404");
+        res.end("404");
     }
 });
 server.listen(3000);
 
-function getAllJokes(req, res){
-    let jokeArray = [];
-    for(let i = 0;i <= 100; i++){
-        let jokeDir = path.join(__dirname, 'data', `${i}.json`);
-        let text = fs.readFileSync(jokeDir);
-        let text2Res = Buffer.from(text).toString();
+function addJoke(req, res){
+    let data = '';
+}
 
-        jokeArray.push(JSON.parse(text2Res));
-        //console.log(JSON.stringify(jokeArray))
+function getAllJokes(req, res){
+    let dataPath = path.join(__dirname, 'data');
+    let dir = fs.readdirSync(dataPath);
+    let jokeArray = [];
+
+    
+    for(let i = 0;i < dir.length; i++){
+        let text = fs.readFileSync(path.join(dataPath, i+'.json'));
+        let jokeJson = Buffer.from(text).toString();
+        let joke = JSON.parse(jokeJson)
+        joke.id = i;
+        
+        jokeArray.push(joke);
         
     }
     res.end(JSON.stringify(jokeArray));
