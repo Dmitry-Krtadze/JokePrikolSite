@@ -3,22 +3,60 @@ let joke = require('one-liner-joke');
 let fs = require('fs');
 let path = require('path');
 let http = require('http');
+let url = require('url');
+
 
 const server = http.createServer((req, res) =>{
+    if(req.url.startsWith('/like')){
+        like(req, res);
+    }
     if(req.url == '/jokes' && req.method == 'GET'){
      getAllJokes(req, res);   
-    }else if(req.url == '/jokes' && req.method == 'POST'){
+    }
+    if(req.url == '/jokes' && req.method == 'POST'){
         addJoke(req, res);
-    }
-    else{
-        res.writeHead(404,"404");
-        res.end("404");
-    }
+    }   
 });
 server.listen(3000);
 
+
+function like(req, res){
+    const params = url.parse(req.url, true).query;
+    let id = params.id;
+    let jokeLikeCount;
+    if(id){
+        let dataPath = path.join(__dirname, 'data');
+        let filePath = path.join(dataPath, id+'.json');
+        let file = fs.readFileSync(filePath);
+        let jokeJSON = Buffer.from(file).toString();
+        let joke = JSON.parse(jokeJSON);
+
+        joke.like++;
+        console.log(joke);
+        jokeLikeCount = joke.like;
+        fs.writeFileSync(filePath, JSON.stringify(joke));
+        
+    }
+    res.end(`Joke ${id}, liked.Now ${jokeLikeCount} likes`);
+}
+
 function addJoke(req, res){
     let data = '';
+    req.on('data', function(chunk){
+        data += chunk;
+    });
+    req.on('end', function(){
+        let joke = JSON.parse(data);
+        joke.likes = 0;
+        joke.dislike = 0;
+        let dataPath = path.join(__dirname, 'data');
+        let dir = fs.readdirSync(dataPath);
+        let fileName = dir.length+'.json';
+        let filePath = path.join(dataPath, fileName);
+        fs.writeFileSync(filePath, JSON.stringify(joke));
+
+        res.end();
+    });
 }
 
 function getAllJokes(req, res){
@@ -26,7 +64,7 @@ function getAllJokes(req, res){
     let dir = fs.readdirSync(dataPath);
     let jokeArray = [];
 
-    
+
     for(let i = 0;i < dir.length; i++){
         let text = fs.readFileSync(path.join(dataPath, i+'.json'));
         let jokeJson = Buffer.from(text).toString();
