@@ -22,7 +22,7 @@ xhr.onload = function() {
         jokeBlock.appendChild(likeDislikeWrapper);
         container.appendChild(jokeBlock);
     });
-}   
+} 
 xhr.send();
 
 

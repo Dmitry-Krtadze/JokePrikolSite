@@ -45,45 +45,47 @@ main{
 }
 
 #jokes_container{
-    overflow: auto;
+    overflow-y: scroll;
+    height: 600px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    padding: 10% 2% 0% 2%;
+    padding: 2% 2% 0% 2%;
+    margin-top: 10%;
 }
 
 
-  .container {
+.container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
-  }
-  h1 {
+}
+h1 {
     text-align: center;
     margin-bottom: 1.5rem;
-  }
+}
 
-  .jokes-grid {
+.jokes-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1rem;
-  }
-  .joke-block {
+}
+.joke-block {
     background-color: rgba(255,255,255,0.8);
     border: 2px solid #ff6600;
     border-radius: 15px;
     padding: 1rem;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  .joke-content {
+}
+.joke-content {
     margin-bottom: 1rem;
     font-size: 1rem;
     line-height: 1.4;
-  }
-  .like-dislike {
+}
+.like-dislike {
     display: flex;
     gap: 0.5rem;
-  }
-  .like-dislike button {
+}
+.like-dislike button {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
@@ -94,7 +96,7 @@ main{
     padding: 0.5rem 0.75rem;
     cursor: pointer;
     font-size: 0.9rem;
-  }
-  .like-dislike button:hover {
+}
+.like-dislike button:hover {
     background-color: #e55b00;
-  }
+}
