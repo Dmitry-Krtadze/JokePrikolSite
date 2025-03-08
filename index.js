@@ -17,9 +17,34 @@ const server = http.createServer((req, res) =>{
     }
     if(req.url == '/jokes' && req.method == 'POST'){
         addJoke(req, res);
-    }   
+    } 
+    if (req.url.startsWith('/like') && req.method === 'POST') {
+        like(req, res);
+    } 
+    if (req.url.startsWith('/dislike')  && req.method === 'POST') {
+        dislike(req, res);
+    } 
 });
 server.listen(3000);
+
+function dislike(req, res){
+    const params = url.parse(req.url, true).query;
+    let id = params.id;
+    let jokeDislikeCount;
+    if(id){
+        console.log('ok id')
+        let dataPath = path.join(__dirname, 'data');
+        let filePath = path.join(dataPath, id+'.json');
+        let file = fs.readFileSync(filePath);
+        let jokeJSON = Buffer.from(file).toString();
+        let joke = JSON.parse(jokeJSON);
+        joke.dislike++;
+        console.log(joke);
+        jokeDislikeCount = joke.dislike;
+        fs.writeFileSync(filePath, JSON.stringify(joke));
+    }
+    res.end(`Joke ${id}, disliked. Now ${jokeDislikeCount} dislikes`);
+}
 
 
 function like(req, res){
@@ -32,7 +57,6 @@ function like(req, res){
         let file = fs.readFileSync(filePath);
         let jokeJSON = Buffer.from(file).toString();
         let joke = JSON.parse(jokeJSON);
-
         joke.like++;
         console.log(joke);
         jokeLikeCount = joke.like;
